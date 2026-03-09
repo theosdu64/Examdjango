@@ -1,11 +1,18 @@
-{% extends 'base.html' %}
-{% block title %}Accueil{% endblock %}
+{% extends 'base.html' %} 
+{% block title %}Accueil{% endblock %} 
 {% block content %}
-  <h1>Accueil</h1>
-  <p>Derniers services :</p>
-  <ul>
-    {% for service in last_services %}
-      <li>{{ service.title }}</li>
-    {% endfor %}
-  </ul>
+<h1>Accueil</h1>
+<p>Tout les skills :</p>
+<ul>
+  {% for skill in all_skill %}
+  <li>{{ skill.name }}</li>
+  {% endfor %}
+</ul>
+<p>Derniers services Acceptés :</p>
+<ul>
+  {% for service in last_services %}
+  <li>{{ service.title }}</li>
+  <li>{{ service.description }}</li>
+  {% endfor %}
+</ul>
 {% endblock %}
