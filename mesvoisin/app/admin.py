@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from mesvoisin.app.models import Service, Skill, UserSkill
+
+admin.site.register(Skill)
+admin.site.register(Service)
+admin.site.register(UserSkill)
