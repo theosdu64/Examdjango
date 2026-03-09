@@ -14,7 +14,7 @@ class Service(models.Model):
     date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return {self.title, self.description, self.skill, self.creator, self.volunteer_id, self.date}
+        return self.title
     
 class UserSkill(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
