@@ -7,12 +7,20 @@ from .models import Service,Skill
 def home(request):
     last_services_accepted = Service.objects.filter(volunteer_id__isnull=False)[:5]
     all_skill = Skill.objects.all()
-    context = {"last_services": last_services_accepted, "all_skill": all_skill}
+    if request.user.is_authenticated:
+        user_skill = request.user.userskill_set.values_list('skill__name', flat=True)
+    else:
+        user_skill = []
+    print(user_skill)
+    context = {"last_services": last_services_accepted, "all_skill": all_skill, "user_skill": user_skill}
     print(context)
     return render(request, 'home.html', context)
 
 def services(request):
-    user_skill = request.user.userskill_set.values_list('skill_id', flat=True)
+    if request.user.is_authenticated:
+        user_skill = request.user.userskill_set.values_list('skill__name', flat=True)
+    else:
+        user_skill = []
     print(user_skill)
     services = Service.objects.filter(volunteer_id__isnull=True)
     context = {"services": services}
