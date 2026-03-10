@@ -9,3 +9,10 @@ def home(request):
     context = {"last_services": last_services_accepted, "all_skill": all_skill}
     print(context)
     return render(request, 'home.html', context)
+
+def services(request):
+    user_skill = request.user.userskill_set.values_list('skill_id', flat=True)
+    print(user_skill)
+    services = Service.objects.filter(volunteer_id__isnull=True)
+    context = {"services": services}
+    return render(request, 'services.html', context)
