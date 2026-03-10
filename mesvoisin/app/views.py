@@ -1,6 +1,7 @@
 from time import timezone
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
 from .forms import ServiceForm
 from .models import Service,Skill
 
@@ -16,12 +17,14 @@ def home(request):
     print(context)
     return render(request, 'home.html', context)
 
+@login_required
 def services(request):
     user_services = Service.objects.filter(creator=request.user)
     services = Service.objects.filter(volunteer_id__isnull=True)
     context = {"services": services,"user_services": user_services}
     return render(request, 'services.html', context)
 
+@login_required
 def postulez(request, service_id):
     service  = Service.objects.get(id=service_id)
     user_services_dates = Service.objects.filter(volunteer_id=request.user).values_list('date', flat=True)
@@ -35,7 +38,7 @@ def postulez(request, service_id):
     else:
         return HttpResponse("Erreur lors de la recupération du service", status=404)
    
-
+@login_required
 def create_service(request):
     all_skill = Skill.objects.all()
     user_skill = request.user.userskill_set.values_list('skill__name', flat=True)
