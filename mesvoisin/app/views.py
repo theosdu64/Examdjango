@@ -6,15 +6,13 @@ from .forms import ServiceForm
 from .models import Service,Skill
 
 def home(request):
-    last_services_accepted = Service.objects.filter(volunteer_id__isnull=False)[:5]
+    last_services_accepted = Service.objects.filter(volunteer_id__isnull=False)[:10]    
     all_skill = Skill.objects.all()
     if request.user.is_authenticated:
         user_skill = request.user.userskill_set.values_list('skill__name', flat=True)
     else:
         user_skill = []
-    print(user_skill)
     context = {"last_services": last_services_accepted, "all_skill": all_skill, "user_skill": user_skill}
-    print(context)
     return render(request, 'home.html', context)
 
 @login_required

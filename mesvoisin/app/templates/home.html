@@ -1,45 +1,49 @@
 {% extends 'base.html' %}
-
-{% block title %}Accueil{% endblock %}
-
+{% load static %}
 {% block content %}
 
-<h1>Accueil</h1>
-
-<p>Tout les skills :</p>
-
-{% if user.is_authenticated %}
-<ul>
-  {% for skill in all_skill %}
-  
-    {% if skill.name in user_skill %}
-      <li>{{ skill }} (Votre compétence)</li>
-    {% else %}
-      <li>{{ skill.name }}</li>
-    {% endif %}
-  
-  {% endfor %}
-</ul>
-
-{% else %}
-
-<ul>
-  {% for skill in all_skill %}
-    <li>{{ skill.name }}</li>
-  {% endfor %}
-</ul>
-
-{% endif %}
-
-<p>Derniers services Acceptés :</p>
-
-<ul>
-  {% for service in last_services %}
-  <li>
-    <strong>{{ service.title }}</strong><br>
-    {{ service.description }}
-  </li>
-  {% endfor %}
-</ul>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <h4>Derniers services acceptés</h4>
+      <div class="row">
+        {% for service in last_services %}
+        <div class="col-md-6 mb-3">
+          <div class="card h-100">
+            <img src="{% static 'app/images/img.png' %}" class="card-img-top" alt="logo" style="max-height: 150px; object-fit: cover;">
+            <div class="card-body">
+              <h5 class="card-title">{{ service.title }}</h5>
+              <p class="card-text">{{ service.description }}</p>
+              <p class="card-text"><small class="text-muted">{{ service.date }}</small></p>
+              <h5>Compétences de l'utilisateur :</h5>
+              {% for skill in service.creator.userskill_set.all %}
+              <span class="badge bg-primary">{{ skill.skill.name }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h4>Toutes les compétences</h4>
+      <ul class="list-group">
+        {% if user.is_authenticated %}
+          {% for skill in all_skill %}
+            {% if skill.name in user_skill %}
+              <li class="list-group-item list-group-item-success">{{ skill.name }} <span class="badge bg-success float-end">Votre compétence</span></li>
+            {% else %}
+              <li class="list-group-item">{{ skill.name }}</li>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% for skill in all_skill %}
+            <li class="list-group-item">{{ skill.name }}</li>
+          {% endfor %}
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
