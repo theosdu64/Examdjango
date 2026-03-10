@@ -37,6 +37,10 @@ def postulez(request, service_id):
    
 
 def create_service(request):
+    all_skill = Skill.objects.all()
+    user_skill = request.user.userskill_set.values_list('skill__name', flat=True)
+    formated_skills = [skill for skill in all_skill if skill.name not in user_skill]
+    transform_queryset_skills = Skill.objects.filter(name__in=formated_skills)
     if request.method == "POST":
         form = ServiceForm(request.POST)
         if form.is_valid():
@@ -46,4 +50,5 @@ def create_service(request):
             return redirect('app:services')
     else:
         form = ServiceForm()
+    form.fields['skill'].queryset = transform_queryset_skills
     return render(request, 'create_service.html', {'form': form})
