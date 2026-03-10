@@ -4,8 +4,17 @@
 <h1>Services</h1>
 <ul>
   {% for service in services %}
+  {% if not service in user_services %}
   <div>{{ service.title }},
-  {{ service.description }}</div>
+  {{ service.description }},
+  {{ service.skill.name }},
+  {{ service.date }}</div>
+    <form action="{% url 'app:postulez' service.id %}" method="post">
+      {% csrf_token %}
+      <button>Postuler</button>
+    </form>
+  </div>
+  {% endif %}
   {% endfor %}
 </ul>
 {% endblock %}
