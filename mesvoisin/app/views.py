@@ -1,6 +1,7 @@
+from time import timezone
 from django.http import HttpResponse
-from django.shortcuts import render
-
+from django.shortcuts import redirect, render
+from .forms import ServiceForm
 from .models import Service,Skill
 
 def home(request):
@@ -16,3 +17,15 @@ def services(request):
     services = Service.objects.filter(volunteer_id__isnull=True)
     context = {"services": services}
     return render(request, 'services.html', context)
+
+def create_service(request):
+    if request.method == "POST":
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            service = form.save(commit=False)
+            service.creator = request.user
+            service.save()
+            return redirect('app:services')
+    else:
+        form = ServiceForm()
+    return render(request, 'create_service.html', {'form': form})
