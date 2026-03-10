@@ -16,6 +16,7 @@
             <button type="submit">Se déconnecter</button>
           </form>
           <button><a href="{% url 'app:services' %}">Services</a></button>
+          <button><a href="{% url 'app:create_service' %}">Créer un service</a></button>
           {% else %}
           <a href="{% url 'login' %}">Connexion</a>
           {% endif %}
