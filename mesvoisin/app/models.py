@@ -10,7 +10,7 @@ class Service(models.Model):
     description = models.TextField()
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     creator = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='services_crees')
-    volunteer_id = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='volunteer')
+    volunteer = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='volunteer')
     date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
