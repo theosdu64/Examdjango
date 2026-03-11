@@ -10,10 +10,12 @@
         {% for service in last_services %}
         <div class="col-md-6 mb-3">
           <div class="card h-100">
-            <img src="{% static 'app/images/img.png' %}" class="card-img-top" alt="logo" style="max-height: 150px; object-fit: cover;">
+            <img src="{% static 'app/images/img.png' %}" class="card-img-top" alt="logo" style="max-height: 150px; object-fit: cover" />
             <div class="card-body">
               <h5 class="card-title">{{ service.title }}</h5>
-              <p class="card-text"><small class="badge rounded-pill text-dark"  style="background-color: {{ service.skill.category.color }};">{{ service.skill.category.name }}</small></p>
+              <p class="card-text">
+                <small class="badge rounded-pill text-muted" style="background-color: {{ service.skill.category.color }};">{{ service.skill.category.name }}</small>
+              </p>
               <p class="card-text">{{ service.description }}</p>
               <p class="card-text"><small class="text-muted">{{ service.date }}</small></p>
               <h6 class="border-bottom pb-2 mb-3">Compétences de l'utilisateur :</h6>
@@ -26,30 +28,45 @@
         {% endfor %}
       </div>
     </div>
+
     <div class="col-md-4">
       <h4>Toutes les compétences</h4>
       <ul class="list-group">
         {% if user.is_authenticated %}
           {% for skill in all_skill %}
             {% if skill.name in user_skill %}
-              <li class="list-group-item list-group-item-success">{{ skill.name }} 
-                  <form action="{% url 'app:delete_skill' skill.id %}" method="post">
+            <li class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+              <div>
+                <span class="badge px-3 py-2 text-dark">{{ skill.name }}</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success">Ma compétence</span>
+                <form action="{% url 'app:delete_skill' skill.id %}" method="post">
                   {% csrf_token %}
-                 <button type="submit" class="btn btn-danger w-50">Supprimer</button>
-                  </form>
-                <span class="badge bg-success float-end">Votre compétence</span>
-              </li>
+                  <button type="submit" class="btn btn-outline-danger btn-sm">Retirer</button>
+                </form>
+              </div>
+            </li>
             {% else %}
-              <li class="list-group-item">{{ skill.name }}</li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                  <span class="badge px-3 py-2 text-dark">{{ skill.name }}</span>
+              </div>
               <form action="{% url 'app:add_skill' skill.id %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm">Ajouter</button>
               </form>
+            </li>
             {% endif %}
           {% endfor %}
         {% else %}
           {% for skill in all_skill %}
-            <li class="list-group-item">{{ skill.name }}</li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <span class="badge rounded-pill px-3 py-2" style="background-color: {{ skill.category.color }}; color: #333;">{{ skill.category.name }}</span>
+              {{ skill.name }}
+            </div>
+          </li>
           {% endfor %}
         {% endif %}
       </ul>
