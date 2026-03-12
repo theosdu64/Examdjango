@@ -87,3 +87,30 @@ def addUserSkill(request, skill_id):
     skill = Skill.objects.get(id=skill_id)
     UserSkill.objects.create(user=request.user, skill=skill)
     return redirect('app:home')
+
+@login_required
+def exchange(request):
+    user = request.user
+    user_skill = UserSkill.objects.filter(user=user).values_list('skill', flat=True)
+    user_skill_needed = Service.objects.filter(
+        volunteer__isnull=True,
+        creator = user,
+    ).values_list('skill', flat=True)
+
+    suggested_services = Service.objects.filter(
+        volunteer__isnull=True,
+        skill__in=user_skill,
+        creator__userskill__skill__in=user_skill_needed
+    ).exclude(creator=user).distinct()
+
+    if suggested_services.count() > 0:
+       other_user = suggested_services.values_list('creator', flat=True)
+       other_user_skills = UserSkill.objects.filter(user__in=other_user).values_list('skill', flat=True)  
+       other_user_skills_name = UserSkill.objects.filter(user__in=other_user).distinct()
+       own_services = Service.objects.filter(
+          volunteer__isnull=True,
+          creator=user,
+          skill__in=other_user_skills 
+       ) 
+
+    return render(request, 'exchange.html', {'own_services': own_services, 'other_user_services': suggested_services, 'other_user_skills': other_user_skills , 'other_user_skills_name': other_user_skills_name})
