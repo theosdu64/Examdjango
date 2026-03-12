@@ -1,6 +1,3 @@
-@startuml
-skinparam classAttributeIconSize 0
-
 class User {
   +id : int
   +username : str
@@ -16,7 +13,7 @@ class Competence {
   +description : str
 }
 
-class DemandeService {
+class Service {
   +id : int
   +activite : str
   +date_creneau : date
@@ -24,7 +21,7 @@ class DemandeService {
   +pourvue : bool
 }
 
-User "1" -- "*" DemandeService : crée >
-DemandeService "*" -- "1" Competence : requiert >
-DemandeService "*" -- "0..1" User : volontaire >
+User "1" -- "*" Service : crée >
+Service "*" -- "1" Competence : requiert >
+Service "*" -- "0..1" User : volontaire >
 User "1" -- "*" Competence : possède >
