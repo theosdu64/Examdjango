@@ -62,3 +62,15 @@ def my_services(request):
     volunteer_services = Service.objects.filter(volunteer=request.user)
     context = {"user_services": user_services,"waiting_services": waiting_services, "accepted_services": accepted_services, "volunteer_services": volunteer_services}
     return render(request, 'my_services.html', context)
+
+@login_required
+def deleteUserSkill(request, skill_id):
+    skill = Skill.objects.get(id=skill_id)
+    UserSkill.objects.filter(user=request.user, skill=skill).delete()
+    return redirect('app:home')
+
+@login_required
+def addUserSkill(request, skill_id):
+    skill = Skill.objects.get(id=skill_id)
+    UserSkill.objects.create(user=request.user, skill=skill)
+    return redirect('app:home')
