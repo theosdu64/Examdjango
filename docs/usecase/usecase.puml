@@ -1,0 +1,43 @@
+@startuml
+
+left to right direction
+
+actor Visiteur as V
+actor User as U
+actor Admin as A
+
+V <|-- U
+
+package systeme {
+usecase "consulter la liste de compétence" as UC2
+usecase "Consulter les échanges de services" as UC3
+
+usecase "se connecter" as UC1
+usecase "Faire une demande de services" as UC4
+usecase "Consultez les demande de services dans son domaine de compétence" as UC5
+usecase "Postulez à une demande de service" as UC7
+usecase "Indiquez ses compétence" as UC6
+
+usecase "Gérer les utilisateurs" as UC11
+
+}
+
+
+V --> UC2
+V --> UC3
+
+U --> UC1
+U --> UC4
+U --> UC5
+U --> UC6
+U --> UC7
+
+A --> UC11
+
+UC4 ..> UC1 : <<include>>
+UC5 ..> UC1 : <<include>>
+UC6 ..> UC1 : <<include>>
+
+UC7 ..> UC5 : <<extend>>
+
+@enduml

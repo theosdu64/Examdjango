@@ -1,0 +1,18 @@
+- Spec
+    
+    Visiteur :
+    
+    1. Afficher les prochains créneaux d'aide anonyme
+    2. Afficher la liste des compétences
+    3. 3. Se connecter
+    
+    User  : 
+    
+    1. Consulter les demandes de service correspondant à ses compétences
+    2. Cree une demande de service 
+    3. Gérer ses compétences
+    4. Se porter volontaire pour une demande de service
+
+    Admin : 
+
+    1.Gerer les classe User,Skill,Service,Category
