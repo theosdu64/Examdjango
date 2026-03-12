@@ -6,6 +6,8 @@ from .forms import ServiceForm
 from .models import Service,Skill, UserSkill
 
 def home(request):
+    '''Affiche la page d'accueil avec les derniers services acceptés et les compétences disponibles pour l'utilisateur non conecté 
+    si l'utilisateur est connecté alors affiche les compétences de l'utilisateur et les compétences disponibles pour lui'''
     last_services_accepted = Service.objects.filter(volunteer__isnull=False)[:10]    
     all_skill = Skill.objects.all()
     if request.user.is_authenticated:
@@ -17,13 +19,19 @@ def home(request):
 
 @login_required
 def services(request):
+    '''Affiche la page des services avec les services disponibles pour l'utilisateur filtrer selon ces skill 
+    et la possibilité de postuler pour un service'''
     user_services = Service.objects.filter(creator=request.user)
-    services = Service.objects.filter(volunteer__isnull=True)
+    services = Service.objects.filter(
+    volunteer__isnull=True,
+    skill__in=request.user.userskill_set.values_list('skill', flat=True)
+    ).exclude(creator=request.user)
     context = {"services": services,"user_services": user_services}
     return render(request, 'services.html', context)
 
 @login_required
 def postulez(request, service_id):
+    '''Permet à un utilisateur de postuler pour un service en vérifiant d'abord s'il n'a pas déjà un service à la même date'''
     service  = Service.objects.get(id=service_id)
     user_services_dates = Service.objects.filter(volunteer=request.user).values_list('date', flat=True)
     if service.date in user_services_dates:
@@ -38,6 +46,7 @@ def postulez(request, service_id):
    
 @login_required
 def create_service(request):
+    '''Permet à un utilisateur de créer un service en filtrant les compétences uniquement disponibles pour lui'''
     all_skill = Skill.objects.all()
     user_skill = request.user.userskill_set.values_list('skill__name', flat=True)
     formated_skills = [skill for skill in all_skill if skill.name not in user_skill]
@@ -56,6 +65,8 @@ def create_service(request):
 
 @login_required
 def my_services(request):
+    '''Affiche la page de l'utilisateur avec les services qu'il a créé et les services pour lesquels 
+    il à postulé en les séparant entre les services en attente d'acceptation et les services acceptés'''
     user_services = Service.objects.filter(creator=request.user)
     accepted_services = user_services.filter(volunteer__isnull=False)
     waiting_services = user_services.filter(volunteer__isnull=True)
@@ -65,12 +76,14 @@ def my_services(request):
 
 @login_required
 def deleteUserSkill(request, skill_id):
+    '''Permet à un utilisateur de supprimer une compétence de son profil'''
     skill = Skill.objects.get(id=skill_id)
     UserSkill.objects.filter(user=request.user, skill=skill).delete()
     return redirect('app:home')
 
 @login_required
 def addUserSkill(request, skill_id):
+    '''Permet à un utilisateur d'ajouter une compétence à son profil'''
     skill = Skill.objects.get(id=skill_id)
     UserSkill.objects.create(user=request.user, skill=skill)
     return redirect('app:home')
